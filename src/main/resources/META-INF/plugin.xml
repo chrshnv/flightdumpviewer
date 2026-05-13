@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>ltd.chrshnv.flightdumpviewer</id>
     <name>JFR Viewer</name>
-    <vendor email="support@jbide.dev" url="https://jbide.dev">jbide</vendor>
+    <vendor email="a@chrshnv.ltd" url="https://chrshnv.ltd">chrshnv.ltd</vendor>
 
     <description><![CDATA[
         <p>Open and visualize Java Flight Recorder (<code>.jfr</code>) recordings directly inside the IDE.</p>
