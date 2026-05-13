@@ -1,0 +1,79 @@
+<idea-plugin>
+    <id>ltd.chrshnv.flightdumpviewer</id>
+    <name>JFR Viewer</name>
+    <vendor email="support@jbide.dev" url="https://jbide.dev">jbide</vendor>
+
+    <description><![CDATA[
+        <p>Open and visualize Java Flight Recorder (<code>.jfr</code>) recordings directly inside the IDE.</p>
+        <ul>
+            <li>CPU flame graph</li>
+            <li>Method hot-spots table with caller/callee drill-down</li>
+            <li>GC &amp; memory timeline</li>
+            <li>Generic event browser for any JFR event type</li>
+            <li>Start a recording on a running local JVM or from a run configuration</li>
+        </ul>
+        <p>Backed by the JDK's built-in <code>jdk.jfr.consumer</code> parser — no extra runtime dependencies.</p>
+    ]]></description>
+
+    <change-notes><![CDATA[
+        <h3>0.1.0</h3>
+        <ul>
+            <li>Initial release: open .jfr files, four built-in views, attach to JVM, run-config integration.</li>
+        </ul>
+    ]]></change-notes>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType
+            name="JFR"
+            implementationClass="ltd.chrshnv.flightdumpviewer.JfrFileType"
+            fieldName="INSTANCE"
+            extensions="jfr"/>
+
+        <fileEditorProvider implementation="ltd.chrshnv.flightdumpviewer.ui.JfrFileEditorProvider"/>
+
+        <toolWindow
+            id="JFR"
+            anchor="bottom"
+            icon="AllIcons.Toolwindows.ToolWindowProfiler"
+            factoryClass="ltd.chrshnv.flightdumpviewer.ui.JfrToolWindowFactory"/>
+
+        <runConfigurationExtension
+            implementation="ltd.chrshnv.flightdumpviewer.recording.JfrRunConfigurationExtension"/>
+
+        <applicationService serviceImplementation="ltd.chrshnv.flightdumpviewer.settings.JfrSettings"/>
+        <applicationConfigurable
+            parentId="tools"
+            instance="ltd.chrshnv.flightdumpviewer.settings.JfrSettingsConfigurable"
+            id="ltd.chrshnv.flightdumpviewer.settings"
+            displayName="JFR Viewer"/>
+
+        <notificationGroup id="JFR Viewer" displayType="BALLOON"/>
+    </extensions>
+
+    <actions>
+        <action
+            id="ltd.chrshnv.flightdumpviewer.OpenJfrFile"
+            class="ltd.chrshnv.flightdumpviewer.actions.OpenJfrFileAction"
+            text="Open JFR Recording..."
+            description="Open a Java Flight Recorder file in JFR Viewer">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+
+        <group id="ltd.chrshnv.flightdumpviewer.RecordingActions" text="JFR Recording" popup="true">
+            <add-to-group group-id="ToolsMenu" anchor="after" relative-to-action="ltd.chrshnv.flightdumpviewer.OpenJfrFile"/>
+            <action
+                id="ltd.chrshnv.flightdumpviewer.StartRecording"
+                class="ltd.chrshnv.flightdumpviewer.actions.StartRecordingAction"
+                text="Start Recording on Local JVM..."
+                description="Attach to a running local JVM and start a JFR recording"/>
+            <action
+                id="ltd.chrshnv.flightdumpviewer.StopRecording"
+                class="ltd.chrshnv.flightdumpviewer.actions.StopRecordingAction"
+                text="Stop Recording on Local JVM..."
+                description="Stop an in-progress JFR recording on a running local JVM and open it"/>
+        </group>
+    </actions>
+</idea-plugin>
