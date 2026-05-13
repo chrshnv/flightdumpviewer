@@ -78,6 +78,4 @@ jobs:
 
             > **Heads up:** this tag is force-updated on every push to `main`. The asset
             > URL for the latest nightly is stable; the underlying commit changes.
-          files: |
-            ${{ steps.artifact.outputs.stable }}
-            ${{ steps.artifact.outputs.versioned }}
+          files: ${{ steps.artifact.outputs.stable }}
