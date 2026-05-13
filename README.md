@@ -44,6 +44,19 @@ JAVA_HOME=$(/usr/libexec/java_home -v 21) ./gradlew runIde
 JAVA_HOME=$(/usr/libexec/java_home -v 21) ./gradlew test
 ```
 
+## Releasing
+
+A `v*` tag triggers `.github/workflows/release.yml`, which:
+
+1. Builds the plugin with the tag's version (`-PpluginVersion=…`).
+2. Uploads the zip as a workflow artifact.
+3. Creates a GitHub Release with auto-generated notes and the zip attached.
+
+```sh
+git tag v0.2.0
+git push origin v0.2.0
+```
+
 ## Project layout
 
 ```
