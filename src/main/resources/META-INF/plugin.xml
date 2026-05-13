@@ -16,9 +16,14 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        <h3>0.1.0</h3>
+        <h3>1.0.0</h3>
         <ul>
-            <li>Initial release: open .jfr files, four built-in views, attach to JVM, run-config integration.</li>
+            <li>First stable release.</li>
+            <li>Target IntelliJ Platform 2025.2; drop deprecated platform API usage (popup chooser instead of <code>Messages.showChooseDialog</code>, <code>ProcessListener</code> instead of <code>ProcessAdapter</code>).</li>
+            <li>Flame graph: mouse-wheel zoom around cursor, drag-to-pan, click-to-focus subtree with back history, toolbar buttons, +/- and Home shortcuts.</li>
+            <li>Mark <code>JfrFileEditorProvider</code> as <code>DumbAware</code> so the editor registers correctly.</li>
+            <li>Open <code>.jfr</code> files with CPU flame graph, hot-spots table, GC &amp; memory timeline, and a generic event browser.</li>
+            <li>Attach to a running local JVM via Tools menu, or inject <code>-XX:StartFlightRecording</code> into a run configuration and auto-open the result.</li>
         </ul>
     ]]></change-notes>
 
