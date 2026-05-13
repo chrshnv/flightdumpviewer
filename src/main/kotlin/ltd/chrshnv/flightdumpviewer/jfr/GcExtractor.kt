@@ -34,6 +34,6 @@ class GcExtractor {
         return GcPause(event.startTime, event.duration.toNanos(), cause, name)
     }
 
-    fun heapTimeline(): List<GcTimelinePoint> = heap
-    fun gcPauses(): List<GcPause> = pauses
+    fun heapTimeline(): List<GcTimelinePoint> = heap.sortedBy { it.timestamp }
+    fun gcPauses(): List<GcPause> = pauses.sortedBy { it.timestamp }
 }
