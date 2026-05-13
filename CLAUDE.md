@@ -66,7 +66,9 @@ To cut a real release: `git tag v0.X.Y && git push origin v0.X.Y`.
 
 ## Plugin compatibility range
 
-`pluginSinceBuild=242`, `pluginUntilBuild=253.*`. We build against IC 2024.2.4 (242.x). The plugin loads up to and including 2025.3 builds. When bumping `untilBuild`, also bump `platformVersion` periodically to catch real API breaks earlier (and run `verifyPlugin`).
+`pluginSinceBuild=252`, `pluginUntilBuild=253.*`. We build against IC 2025.2.4 (252.x), with Kotlin 2.2.0 (required because the platform's bundled `util-8.jar` ships Kotlin stdlib metadata 2.2.0 — anything older fails compile with "actual metadata version is 2.2.0 but compiler reads up to 2.0.0"). When bumping `untilBuild`, also bump `platformVersion` periodically to catch real API breaks earlier (and run `verifyPlugin`).
+
+The test runtime needs `junit:junit:4.13.2` even though our tests are JUnit 5 — the platform's JUnit5 environment initializer touches `org.junit.rules.TestRule` via `Logger.setFactory` and throws `NoClassDefFoundError` otherwise.
 
 ## Gotchas observed in this repo
 

@@ -5,9 +5,9 @@ import com.intellij.execution.RunConfigurationExtension
 import com.intellij.execution.configurations.JavaParameters
 import com.intellij.execution.configurations.RunConfigurationBase
 import com.intellij.execution.configurations.RunnerSettings
-import com.intellij.execution.process.ProcessAdapter
 import com.intellij.execution.process.ProcessEvent
 import com.intellij.execution.process.ProcessHandler
+import com.intellij.execution.process.ProcessListener
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ApplicationManager
@@ -71,7 +71,7 @@ class JfrRunConfigurationExtension : RunConfigurationExtension() {
         val pendingPath = PENDING_FILE.get(configuration) ?: return
         val project: Project = configuration.project
         val file = Paths.get(pendingPath)
-        handler.addProcessListener(object : ProcessAdapter() {
+        handler.addProcessListener(object : ProcessListener {
             override fun processTerminated(event: ProcessEvent) {
                 if (!JfrSettings.get().state.autoOpenRecordings) return
                 if (!Files.exists(file)) {

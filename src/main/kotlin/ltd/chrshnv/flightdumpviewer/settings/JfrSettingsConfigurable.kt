@@ -23,12 +23,10 @@ class JfrSettingsConfigurable : Configurable {
     override fun getDisplayName(): String = "JFR Viewer"
 
     override fun createComponent(): JComponent {
-        outputDirField.addBrowseFolderListener(
-            "Output Directory",
-            "JFR recordings will be written here",
-            null,
-            FileChooserDescriptorFactory.createSingleFolderDescriptor(),
-        )
+        val descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
+            .withTitle("Output Directory")
+            .withDescription("JFR recordings will be written here")
+        outputDirField.addBrowseFolderListener(null, descriptor)
 
         val form = FormBuilder.createFormBuilder()
             .addLabeledComponent(JBLabel("Default recording duration (seconds):"), durationField, 1, false)

@@ -9,7 +9,9 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
+import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.vfs.LocalFileSystem
 import ltd.chrshnv.flightdumpviewer.recording.JvmAttachService
 import ltd.chrshnv.flightdumpviewer.settings.JfrSettings
@@ -31,15 +33,28 @@ class StopRecordingAction : AnAction() {
         if (jvms.isEmpty()) {
             notify(project, "No local JVMs found.", NotificationType.WARNING); return
         }
-        val labels = jvms.map { "${it.pid} — ${it.displayName}" }.toTypedArray()
-        val index = Messages.showChooseDialog(
-            project, "Select a JVM:", "Stop JFR Recording", null, labels, labels[0],
-        )
-        if (index < 0) return
-        val selected = jvms[index]
+
+        JBPopupFactory.getInstance()
+            .createPopupChooserBuilder(jvms)
+            .setTitle("Stop JFR Recording — Select JVM")
+            .setRenderer(JvmListRenderer())
+            .setItemChosenCallback { selected -> promptNameAndStop(project, service, selected) }
+            .createPopup()
+            .showCenteredInCurrentWindow(project)
+    }
+
+    private fun promptNameAndStop(
+        project: Project,
+        service: JvmAttachService,
+        selected: JvmAttachService.JvmInfo,
+    ) {
         val name = Messages.showInputDialog(
-            project, "Recording name (use the same name passed to JFR.start):",
-            "Stop JFR Recording", null, "", null,
+            project,
+            "Recording name (use the same name passed to JFR.start):",
+            "Stop JFR Recording",
+            null,
+            "",
+            null,
         ) ?: return
 
         val settings = JfrSettings.get().state
@@ -63,14 +78,15 @@ class StopRecordingAction : AnAction() {
             override fun onThrowable(error: Throwable) {
                 notify(
                     project,
-                    "Failed to stop JFR recording on PID ${selected.pid}: ${error.message ?: error.javaClass.simpleName}",
+                    "Failed to stop JFR recording on PID ${selected.pid}: " +
+                        (error.message ?: error.javaClass.simpleName),
                     NotificationType.ERROR,
                 )
             }
         }.queue()
     }
 
-    private fun notify(project: com.intellij.openapi.project.Project, msg: String, type: NotificationType) {
+    private fun notify(project: Project, msg: String, type: NotificationType) {
         NotificationGroupManager.getInstance()
             .getNotificationGroup("JFR Viewer")
             .createNotification(msg, type)

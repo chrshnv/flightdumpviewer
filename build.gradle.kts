@@ -1,8 +1,9 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.9.24"
-    id("org.jetbrains.intellij.platform") version "2.0.1"
+    kotlin("jvm") version "2.2.0"
+    id("org.jetbrains.intellij.platform") version "2.6.0"
 }
 
 group = providers.gradleProperty("pluginGroup").get()
@@ -30,13 +31,15 @@ dependencies {
                 .map { it.split(',').map(String::trim).filter(String::isNotEmpty) },
         )
 
-        instrumentationTools()
         pluginVerifier()
     }
 
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    // IntelliJ Platform 2025.2's JUnit5 test environment initializer references
+    // org.junit.rules.TestRule via Logger.setFactory; satisfy that with vintage.
+    testRuntimeOnly("junit:junit:4.13.2")
 }
 
 intellijPlatform {
@@ -58,10 +61,10 @@ intellijPlatform {
 }
 
 tasks {
-    withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = providers.gradleProperty("javaVersion").get()
-            freeCompilerArgs += listOf("-Xjvm-default=all")
+    withType<KotlinCompile>().configureEach {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
+            freeCompilerArgs.add("-Xjvm-default=all")
         }
     }
 
