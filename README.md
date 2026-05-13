@@ -67,4 +67,4 @@ v0.1.0 — early. Open .jfr files, attach to JVMs, and run-config recording all 
 
 ## License
 
-TBD.
+Apache License 2.0 — see [LICENSE](LICENSE).
