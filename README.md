@@ -57,6 +57,15 @@ git tag v0.2.0
 git push origin v0.2.0
 ```
 
+### Nightly builds
+
+Every push to `main` produces a nightly via `.github/workflows/build.yml`. The
+zip is uploaded as a workflow artifact (30-day retention) and also published
+to a moving `nightly` pre-release. The latest nightly always lives at the
+same URL:
+
+`https://github.com/chrshnv/flightdumpviewer/releases/download/nightly/flightdumpviewer-nightly.zip`
+
 ## Project layout
 
 ```
